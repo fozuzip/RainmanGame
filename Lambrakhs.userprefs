@@ -1,0 +1,21 @@
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\poems.txt">
+    <Files>
+      <File FileName="Assets\TextGeneration.cs" Line="1" Column="1" />
+      <File FileName="Assets\poems.txt" Line="1" Column="1" />
+      <File FileName="Assets\ScrollTexture.cs" Line="1" Column="1" />
+      <File FileName="Assets\PlayerController.cs" Line="1" Column="1" />
+      <File FileName="Assets\TextController.cs" Line="1" Column="1" />
+      <File FileName="Assets\GameMaster.cs" Line="1" Column="1" />
+      <File FileName="Assets\CollisionController.cs" Line="1" Column="1" />
+      <File FileName="Assets\ApplicationModel.cs" Line="1" Column="1" />
+      <File FileName="Assets\Fading.cs" Line="1" Column="1" />
+      <File FileName="Assets\NextScene.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

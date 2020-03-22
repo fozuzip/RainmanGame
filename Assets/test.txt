@@ -1,0 +1,159 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using System.IO;
+using System.Text;
+using System;
+
+public class TextGeneration : MonoBehaviour {
+
+	Text textbox;
+	Button generateButton;
+
+	string fileName = "Assets/poems.txt";
+	public int order  = 6;
+	string begin;
+	string end;
+	Dictionary<string , List<string>> ngrams = new Dictionary<string , List<string>>();
+
+
+	void Start(){
+		SetBeginEnd ();
+		TrainFromFile ();
+
+		textbox = GameObject.Find("TextBox").GetComponent<Text>();
+		generateButton = GameObject.Find("GenerateButton").GetComponent<Button>();
+		generateButton.onClick.AddListener(Generate);
+	}
+
+	void SetBeginEnd(){
+		string b = "";
+		string e = " ";
+		for (int i = 0; i < order; i++) {
+			b += "#";
+			e += "|";
+		}
+		b += " ";
+		e += " ";
+		begin = b;
+		end = e;
+	}
+
+	bool TrainFromFile(){
+		try
+		{
+			string line;
+
+			FileStream stream = new FileStream(fileName , FileMode.Open);
+			StreamReader theReader = new StreamReader(stream);
+
+			using(theReader){
+				// While there's lines left in the text file, do this:
+				do
+				{
+					line = theReader.ReadLine();
+					if (line != null)
+					{
+						line = begin+line+end;
+						Train(line);
+					}
+				}
+				while (line != null);
+				// Done reading, close the reader and return true to broadcast success    
+				theReader.Close();
+				return true;
+			}
+		}
+		// If anything broke in the try block, we throw an exception with information
+		// on what didn't work
+		catch (Exception e)
+		{
+			Console.WriteLine("{0}\n", e.Message);
+			return false;
+		}
+	}
+
+	void Train(string txt){
+		for (int i = 0; i < txt.Length - order + 1; i++) {
+			string gram = txt.Substring (i, order);
+			if (!ngrams.ContainsKey (gram)) {
+				ngrams.Add (gram, new List<string> ());
+			}
+			//print (gram);
+			if(i+order < txt.Length-1)
+				ngrams [gram].Add (txt.Substring (i + order, 1));
+		}
+
+	}
+
+	void PrintNgram(){
+		foreach(KeyValuePair<string,List<string>> kvp in ngrams){
+			print(kvp.Key + " -> ");
+			foreach (string s in kvp.Value) {
+				print (s);
+			}
+		}
+	}
+
+	void Update () {
+		if (Input.GetKeyDown (KeyCode.Space)) {	
+			Generate ();
+		}
+	}
+
+	void Generate(){
+		string currentGram = begin.Substring (0, order);
+		string result = currentGram;
+		do {
+			List<string> possibilities = ngrams [currentGram];
+			if (possibilities == null || possibilities.Count == 0) {
+				break;
+			}
+			string next = possibilities [UnityEngine.Random.Range (0, possibilities.Count)];
+			result += next;
+			currentGram = result.Substring (result.Length - order, order);
+		} while(currentGram != end);
+		print ("<" + result + ">");
+		result = RemoveSymbols (result);
+		print (result);
+		textbox.text = result;
+	}
+
+	string RemoveSymbols(string text){
+		string ret = "\"";
+		char prevC = 'a';
+		foreach(char c in text){
+			if (c == '#' || c == '|') {
+				prevC = c;
+				continue;
+			}
+			if(c == ' ' && (prevC == '#' || prevC == '|')){
+				prevC = c;
+				continue;
+			}
+			ret += c;
+		}
+		ret += "\"";
+		return ret;
+	}
+
+	void GenerateWordByWord(){
+		string currentGram = begin.Substring (0, order);
+		string result = currentGram;
+		string nextWord = FetchWord (currentGram);
+	}
+
+	string FetchWord(string gram){
+		string word = "";
+		do{
+			List<string> possibilities = ngrams [gram];
+			if (possibilities == null || possibilities.Count == 0) {
+				break;
+			}
+			string next = possibilities [UnityEngine.Random.Range (0, possibilities.Count)];
+			word += next;
+			gram = word.Substring (word.Length - order, order);
+		} while(currentGram != end);
+	}
+}
